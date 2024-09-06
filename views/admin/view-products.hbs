@@ -30,7 +30,10 @@
                         <td>{{this.brand}} </td>
                         <td> {{this.description}} </td>
                         <td> <img src="/images/{{this._id}}.jpg" width="50px" height="50px">  </td>
-                    </tr>
+                         <td><a class="btn btn-warning" href="/admin/edit-product/{{this._id}}">Edit</a></td>
+                        <td><a class="btn btn-danger" href="/admin/delete-product/{{this._id}}" onclick=" return confirm('Do you want to delete {{this.name}}?')">Delete</a></td>
+                        <!--<td><a class="btn btn-danger" href="/admin/delete-product?id={{this._id}}">Delete</a></td>-->
+                   </tr>
                     {{/each}}
                 </tbody>
             </table>

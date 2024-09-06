@@ -1,5 +1,8 @@
 var db=require('../config/connection')
 var collection=require('../config/collection')
+const {ObjectId}=require('mongodb')
+const { resolve } = require('path')
+const { response } = require('express')
 
 module.exports={
 //functn to add products to product collection using callback
@@ -20,7 +23,39 @@ module.exports={
             let products=await db.get().collection(collection.Product_Collection).find().toArray()
             resolve(products)
         })
-    }
-    
+    },
+
+    deleteProduct:(proId)=>{
+        return new Promise((resolve,reject)=>{
+           db.get().collection(collection.Product_Collection).deleteOne({_id:new ObjectId(proId)}).then((response)=>{
+                resolve(response)
+            })
+        
+        })
+    },
+
+  getProductDetails:(proId)=>{
+        return new Promise((resolve,reject)=>{
+            db.get().collection(collection.Product_Collection).findOne({_id:new ObjectId(proId)}).then((product)=>{
+                resolve(product)
+            })
+        })
+    },
+
+    updateProduct:(proID,proDetails)=>{
+        return new Promise((resolve,reject)=>{
+           db.get().collection(collection.Product_Collection).updateOne({_id:new ObjectId(proID)},{
+                $set:{
+                    name:proDetails.name,
+                    brand:proDetails.brand,
+                    description:proDetails.description
+
+                }
+            })
+        }).then((response)=>{
+            resolve(response)
+        })
+    },
+
 
 }
