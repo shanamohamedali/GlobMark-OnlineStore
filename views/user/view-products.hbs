@@ -8,8 +8,10 @@
                     <div class="card-body">
                         <h5 class="card-title">{{this.name}}</h5>
                         <h5 class="card-title">{{this.brand}}</h5>
+                        <h5 class="card-title">AED {{this.Price}}</h5>
+                        <h5 class="card-title">{{this.category}}</h5>
                         <p class="card-text">{{this.description}}</p>
-                        <a href="#" class="btn btn-warning">Add to Cart</a>
+                        <button class="btn btn-warning" onclick="addtoCart('{{this._id}}')">Add to Cart</button>
                     </div>
                 </div>
             </div>

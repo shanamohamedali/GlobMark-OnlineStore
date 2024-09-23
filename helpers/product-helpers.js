@@ -43,11 +43,13 @@ module.exports={
     },
 
     updateProduct:(proID,proDetails)=>{
-        return new Promise((resolve,reject)=>{
-           db.get().collection(collection.Product_Collection).updateOne({_id:new ObjectId(proID)},{
+        return new Promise(async(resolve,reject)=>{
+           await db.get().collection(collection.Product_Collection).updateOne({_id:new ObjectId(proID)},{
                 $set:{
                     name:proDetails.name,
+                    price:proDetails.price,
                     brand:proDetails.brand,
+                    category:proDetails.category,
                     description:proDetails.description
 
                 }

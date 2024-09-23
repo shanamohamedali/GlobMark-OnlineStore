@@ -1,1 +1,100 @@
-<h3 class="text-center">Cart is empty</h3>
+<section>
+    <div class="container">
+        <div class="row pt-5">
+            <div class="offset-lg-2 col-lg-8 offset-lg-2 text-center">
+                <div class="text-center pb-3">
+                    <h3>Shopping Cart</h3>
+                </div>
+               
+                <table class="table">
+                    <tr class="bg-dark text-white
+                    ">
+                        <th>Product</th>
+                        <th>Title</th>
+                        <th>Price</th>
+                        <th></th>
+                        <th></th>
+                    </tr>
+                    {{#each products}}
+                    <tr>
+
+                        <td><img src="/images/{{this.productDetails._id}}.jpg" width="80px" height="80px"
+                                alt="cart-product-image"></td>
+                        <td><label name="name">{{this.productDetails.name}}</label></td>
+                        <td>AED {{this.productDetails.price}}</td>
+
+                        <td><button class="btn btn-success"
+                                onclick="changeQuantity('{{this._id}}','{{this.productDetails._id}}','{{../user._id}}',-1)">-</button>
+                            <span id="{{this.productDetails._id}}">{{this.quantity}}</span>
+                            <button class="btn btn-success"
+                                onclick="changeQuantity('{{this._id}}','{{this.productDetails._id}}','{{../user._id}}',1)">+</button>
+                        </td>
+
+                        <td><button class="btn btn-danger"
+                                onclick="deleteCartProduct('{{this._id}}','{{this.productDetails._id}}','{{../user._id}}')">Remove</button>
+                        </td>
+                    </tr>
+                    {{/each}}
+                </table>
+                 <hr>
+        <div class="float-right mr-4">
+            <h6>Total:AED <span id="total">{{totalprice}}</span></h6>
+        <a href="/placeOrder" class="btn btn-warning">Place Order</a></div>
+            </div>
+       
+        </div>
+    </div>
+
+</section>
+
+<script>
+    function changeQuantity(cartId, proId, userId, count) {
+        quantity = parseInt(document.getElementById(proId).innerHTML)
+        console.log(userId)
+        count = parseInt(count)
+        $.ajax({
+            url: '/change-cart-quantity',
+            data: {
+                cartId: cartId,
+                proId: proId,
+                userId:userId,
+                count: count,
+                quantity: quantity
+            },
+            method: 'post',
+            success: (response) => {
+                if (response.removeProduct) {
+                    alert('Product Removed')
+                    location.reload()
+                } else {
+                    document.getElementById(proId).innerHTML = quantity + count
+                    document.getElementById('total').innerHTML=response.total
+                }
+            }
+
+        })
+    }
+
+    function deleteCartProduct(cartId, proId,userId) {
+        confirm("Are you sure want to delete this product from cart?")
+        if(confirm){
+$.ajax({
+            url:'/delete-cart-product',
+            data: {
+                cartId: cartId,
+                proId: proId,
+                userId:userId
+            },
+            method:'post',
+            success:(response)=>{
+               alert("product removed")
+              location.reload()
+            }
+        })
+        }else{
+            
+        }
+        
+        }
+    
+</script>
