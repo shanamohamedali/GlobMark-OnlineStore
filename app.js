@@ -9,6 +9,7 @@ var fileUpload=require("express-fileupload")
 var session=require('express-session')
 
 
+
 db.connect((err)=>{
   if(err)
     console.log("Connection error"+ err)
@@ -21,6 +22,7 @@ var adminRouter = require('./routes/admin');
 var userRouter = require('./routes/user');
 
 var app = express();
+
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));

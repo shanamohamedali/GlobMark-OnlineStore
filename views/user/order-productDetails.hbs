@@ -1,0 +1,31 @@
+<section>
+    <div class="container">
+
+        <div class="pt-3"><a href="../viewOrder" class="btn btn-warning text-left">Back to order page</a> </div>
+        <div>
+            <h3 class="text-center">Product Details</h3>
+        </div>
+        <hr>
+
+        {{#each product}}
+        <div class="row pb-3">
+
+
+            <div class="col-6 col-md-3 text-right">
+                <div>
+                    <img src="/images/{{this.product._id}}.jpg" alt="product-image" height="150px" width="200px">
+                </div>
+            </div>
+            <div class="col-6 col-md-3 pr-1">
+                <div>
+                    <h4>{{this.product.name}}</h4>
+                    <p>{{this.product.brand}}</p>
+                    <p>No: of Items:{{this.quantity}}</p>
+                    <p>{{this.product.description}}</p>
+                </div>
+            </div>
+        </div>
+        {{/each}}
+
+    </div>
+</section>

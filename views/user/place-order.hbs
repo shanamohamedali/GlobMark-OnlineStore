@@ -3,66 +3,143 @@
         <div class="row p-5">
             <form action="" id="checkout-form">
                 <div></div>
-                        <h3>Enter Delivery Details</h3>
-                    </div>
-                <div class="col-md-6 float-left p-3" width="100%">
-                    
-                    <div class="form-group">
-                        <input type="text" class="form-control" name="userId" id="userId" value="{{user._id}}" hidden>
-                    </div>
-                    <div class="form-group">
-                        <label for="address">Address</label>
-                        <input type="text" class="form-control" name="address" id="address">
-                    </div>
-                    <div class="form-group">
-                        <label for="pincode">Pincode</label>
-                        <input type="text" class="form-control" name="pincode" id="pincode">
-                    </div>
-                    <div class="form-group">
-                        <label for="phone">Phone Number</label>
-                        <input type="text" class="form-control" name="phone" id="phone">
-                    </div>
-                </div>
-
-                <div class="col-md-6 float-right p-3" width="100%">
-                    <div class="p-3"  style="border: 1px solid black;" >
-                    <div>
-                        <h5>Total Price: AED {{this.totalprice}}</h5>
-                    </div>
-                    <hr>
-                    <label><h4>Payment Method</h4></label>
-                    <div class="form-group form-check">
-                        <label class="form-check-label">
-                            <input type="radio" class="form-check-input" id="" name="payment-method" value="cod" checked>Cash On Delivery
-                        </label>
-                    </div>
-                    <div class="form-check form-group">
-                        <label class="form-check-label">
-                            <input type="radio" class="form-check-input" id="" name="payment-method" value="online">Online
-                        </label>
-                    </div>
-                    <div>
-                        <button class="btn btn-warning" type="submit">Check Out</button>
-                    </div>
-                    </div>
-                </div>
-            </form>
+                <h3>Enter Delivery Details</h3>
         </div>
+        <div class="col-md-6 float-left p-3" width="100%">
+
+            <div class="form-group">
+                <input type="text" class="form-control" name="userId" id="userId" value="{{user._id}}" hidden>
+            </div>
+            <div class="form-group">
+                <label for="address">Address</label>
+                <input type="text" class="form-control" name="address" id="address">
+            </div>
+            <div class="form-group">
+                <label for="pincode">Pincode</label>
+                <input type="text" class="form-control" name="pincode" id="pincode">
+            </div>
+            <div class="form-group">
+                <label for="phone">Phone Number</label>
+                <input type="text" class="form-control" name="phone" id="phone">
+            </div>
+        </div>
+
+        <div class="col-md-6 float-right p-3" width="100%">
+            <div class="p-3" style="border: 1px solid black;">
+                <div>
+                    <h5>Total Price: AED {{this.totalprice}}</h5>
+                </div>
+                <hr>
+                <label>
+                    <h4>Payment Method</h4>
+                </label>
+                <div class="form-group form-check">
+                    <label class="form-check-label">
+                        <input type="radio" class="form-check-input" id="" name="payment-method" value="cod"
+                            checked>Cash On Delivery
+                    </label>
+                </div>
+                <div class="form-check form-group">
+                    <label class="form-check-label">
+                        <input type="radio" class="form-check-input" id="" name="payment-method" value="online">Online
+                    </label>
+                </div>
+                <div>
+                    <button class="btn btn-warning" type="submit">Check Out</button>
+                </div>
+            </div>
+        </div>
+        </form>
+    </div>
     </div>
 </section>
 
+
+
+
 <script>
-    $('#checkout-form').submit((e)=>{
-        e.preventDefault()
+    $('#checkout-form').submit((e) => {
+        e.preventDefault();
         $.ajax({
-            url:'/placeOrder',
-            method:'post',
-            data:$('#checkout-form').serialize(),
-            success:(response)=>{
-                 alert("Your order placed successfully. Click OK to go to the order page.");
-                 window.location.href = '/order-page';
+            url: '/placeOrder',
+            method: 'post',
+            data: $('#checkout-form').serialize(),
+            success: (response) => {
+                if (response.codSuccess) {
+                    alert("Your order was placed successfully. Click OK to go to the order page.");
+                    window.location.href = '/viewOrder';
+                } else {
+                    alert("Your order was placed successfully. Click OK to go to the payment page.")
+                    razorpayPayment(response)
+                }
+
             }
-               
+        });
+
+
+    });
+
+    function razorpayPayment(order) {
+        var options = {
+            "key": "rzp_test_upKTRSVeXdbj3r", // Enter the Key ID generated from the Dashboard
+            "amount": order.amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+            "currency": "INR",
+            "name": "GlobMark Trading",
+            "description": "Test Transaction",
+            "image": "https://example.com/your_logo",
+            "order_id": order.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+            "callback_url": "https://eneqd3r9zrjok.x.pipedream.net/",
+
+            "handler": function (response) {
+                // alert(response.razorpay_payment_id);
+                // alert(response.razorpay_order_id);
+                // alert(response.razorpay_signature)
+                verifyPayment(response, order)
+            },
+
+            "prefill": {
+                "name": "Gaurav Kumar",
+                "email": "gaurav.kumar@example.com",
+                "contact": "9000090000"
+            },
+            "notes": {
+                "address": "Razorpay Corporate Office"
+            },
+            "theme": {
+                "color": "#3399cc"
+            }
+        };
+        var rzp1 = new Razorpay(options)
+        rzp1.on('payment.failed', function (response) {
+            alert(response.error.code);
+            alert(response.error.description);
+            alert(response.error.source);
+            alert(response.error.step);
+            alert(response.error.reason);
+            alert(response.error.metadata.order_id);
+            alert(response.error.metadata.payment_id);
         })
-    })
+        rzp1.open();
+
+    }
+
+    function verifyPayment(payment, order) {
+        $.ajax({
+            url: '/verify-payment',
+            data: {
+                payment,
+                order
+            },
+            method: 'post',
+            success:(response)=>{
+            if(response.status){
+            alert("Payment Successful, Click OK to go to the order page.");
+            window.location.href = '/viewOrder';
+        }else {
+            alert('Payment failed')
+        }
+    }
+})
+}
+
 </script>

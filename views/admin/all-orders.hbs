@@ -1,0 +1,42 @@
+<section>
+    <div class="container mt-5">
+        <div class="row">
+            <div>
+                <p class="text-danger">{{message}}</p>
+                <table class="table" id="tbOrder">
+                    <thead>
+                        <tr class="bg-dark text-white">
+                            <th>Date</th>
+                            <th>Order Id</th>
+                            <th>Address</th>
+                            <th>No: of Items</th>
+                            <th>Price</th>
+                            <th>Status</th>
+                            <th>Change Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{#each orders}}
+                        <tr>
+                            <td>{{this.date}}</td>
+                            <td>{{this._id}}</td>
+                            <td>{{this.deliveryDetails.address}}<br>
+                                pincode:{{this.deliveryDetails.pincode}}<br>Phone Number:{{this.deliveryDetails.phone}}
+                            </td>
+                            <td>{{this.countItems}}</td>
+                            <td>{{this.totalprice}}</td>
+                            <td>{{this.status}}</td>
+                            <td><a class="btn btn-warning" href="/admin/change-status/{{this._id}}">Add to Shipping</a></td>
+                        </tr>
+                        {{/each}}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</section>
+<script>
+    $(document).ready(function () {
+        $('#tbOrder').DataTable();
+    });
+</script>
